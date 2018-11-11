@@ -6,8 +6,10 @@
     "playground": "graphql playground"
   },
   "dependencies": {
+    "dataloader": "^1.4.0",
     "graphql-import": "0.7.1",
     "graphql-yoga": "1.16.7",
+    "lodash": "^4.17.11",
     "pg": "7.6.1",
     "sequelize": "4.41.1",
     "sqlite3": "^4.0.4"

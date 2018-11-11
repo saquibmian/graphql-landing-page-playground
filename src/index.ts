@@ -8,8 +8,6 @@ import { ComponentService } from './service/ComponentService';
 import { ComponentRepository } from './data/ComponentRepository';
 import { StatusUpdateService } from './service/StatusUpdateService';
 import { StatusUpdateRepository } from './data/StatusUpdateRepository';
-import { printSchema } from 'graphql';
-import { resolverMap } from './gql/decorators/_internal';
 
 const db = new Database({
   path: process.env.DB_FILE || '',
@@ -18,7 +16,7 @@ const db = new Database({
   password: process.env.DB_PASSWORD || '',
 });
 
-function contextFactory(): Context {
+function requestContextFactory(): Context {
   const principal = { name: 'Saquib' };
 
   const componentRepo = new ComponentRepository(db);
@@ -37,7 +35,7 @@ function contextFactory(): Context {
 const server = new GraphQLServer({
   resolvers,
   typeDefs,
-  context: contextFactory
+  context: requestContextFactory
 });
 
 server.get('/', (req: Request, res: Response) => res.json({ response: 'nothing here!' }));
