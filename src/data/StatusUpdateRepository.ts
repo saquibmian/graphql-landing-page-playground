@@ -8,15 +8,13 @@ export class StatusUpdateRepository {
     private readonly _dataloader: DataLoader<number, StatusUpdateDAO[]>;
 
     constructor(
-        private readonly _db: Database
+        private readonly _db: Database,
     ) {
-        this._dataloader = new DataLoader(
-            (ids: number[]) => StatusUpdateRepository.load(this._db, ids)
-        );
+        this._dataloader = new DataLoader(ids => this.load(ids));
     }
 
-    private static async load(db: Database, toFetch: number[]): Promise<StatusUpdateDAO[][]> {
-        const fetched = await db.statusUpdates.findAll({
+    private async load(toFetch: number[]): Promise<StatusUpdateDAO[][]> {
+        const fetched = await this._db.statusUpdates.findAll({
             where: {
                 componentId: toFetch
             }
@@ -28,7 +26,7 @@ export class StatusUpdateRepository {
 
     async getAll(componentId?: number): Promise<StatusUpdateDAO[]> {
         if (componentId == null) {
-            const all = await this._db.statusUpdates.findAll();
+            const all = await this._db.statusUpdates.findAll({ order: [['timestamp', 'DESC']] });
             return all;
         }
         const all = await this._dataloader.load(componentId);
