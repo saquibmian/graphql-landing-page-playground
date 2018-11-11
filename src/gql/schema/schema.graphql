@@ -1,0 +1,36 @@
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+"""An ISO8601 RFC3339 formatted date and time."""
+scalar DateTime
+
+type Query {
+    component(name: String!): Component
+    components: [Component!]!
+    updates(component: String, mostRecent: Int, since: Int): [StatusUpdate!]!
+}
+
+type Mutation {
+    postUpdate(component: String!, severity: Severity!, message: String!): StatusUpdate!
+}
+
+type Component {
+    name: String!
+    statusUpdates(mostRecent: Int, since: Int): [StatusUpdate!]!
+}
+
+type StatusUpdate {
+    id: ID!
+    timestamp: DateTime!
+    component: Component!
+    severity: Severity!
+    message: String!
+}
+
+enum Severity {
+    GREEN
+    YELLOW
+    RED
+}
