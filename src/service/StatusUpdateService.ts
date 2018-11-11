@@ -16,7 +16,7 @@ export class StatusUpdateService {
     async getAll(principal: Principal, component?: Component): Promise<StatusUpdate[]> {
         if (component != null) {
             const all = await this._repository.getAll(component.id);
-            return Promise.all(all.map(item => {
+            return await Promise.all(all.map(item => {
                 return new StatusUpdate(item, component);
             }));
         }
