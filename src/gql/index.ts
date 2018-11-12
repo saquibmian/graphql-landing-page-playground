@@ -4,6 +4,14 @@ import { ComponentRepository } from '../data/ComponentRepository';
 import { StatusUpdateRepository } from '../data/StatusUpdateRepository';
 import { ComponentService } from '../service/ComponentService';
 import { StatusUpdateService } from '../service/StatusUpdateService';
+import { makeExecutableSchema } from 'graphql-tools';
+import { typeDefs } from './schema';
+import { resolverMap } from './decorators/_internal';
+
+export const schema = makeExecutableSchema({
+    typeDefs,
+    resolvers: resolverMap,
+});
 
 export function requestContext(): RequestHandler {
     return (req, res, next) => {
@@ -11,11 +19,11 @@ export function requestContext(): RequestHandler {
         const principal = res.locals.principal;
         const logger = res.locals.logger;
 
-        const componentRepo = new ComponentRepository(db);
-        const statusUpdateRepo = new StatusUpdateRepository(db);
+        const componentRepository = new ComponentRepository(logger, db.components);
+        const statusUpdateRepository = new StatusUpdateRepository(logger, db.statusUpdates);
 
-        const components = new ComponentService(componentRepo);
-        const statusUpdates = new StatusUpdateService(componentRepo, statusUpdateRepo);
+        const components = new ComponentService(logger, componentRepository);
+        const statusUpdates = new StatusUpdateService(logger, componentRepository, statusUpdateRepository);
 
         const context: IGQLContext = {
             logger,
@@ -24,6 +32,9 @@ export function requestContext(): RequestHandler {
             statusUpdates,
         };
         res.locals.graphqlContext = context;
+
+        logger.trace('registered graphql context for request');
+
         next();
     };
 }

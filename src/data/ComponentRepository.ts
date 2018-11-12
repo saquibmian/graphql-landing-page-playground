@@ -1,14 +1,16 @@
+import * as Logger from 'bunyan';
 import * as DataLoader from 'dataloader';
 import sequelize = require('sequelize');
 import { IComponentDAO } from './ComponentDAO';
-import { Database } from './db';
+import { ComponentModel } from './db/component';
 
 export class ComponentRepository {
 
     private readonly _dataloader: DataLoader<number | string, IComponentDAO>;
 
     constructor(
-        private readonly _db: Database,
+        private readonly _log: Logger,
+        private readonly _components: ComponentModel,
     ) {
         this._dataloader = new DataLoader((ids) => this.load(ids));
     }
@@ -24,7 +26,7 @@ export class ComponentRepository {
     }
 
     public async getAll(): Promise<IComponentDAO[]> {
-        const all = await this._db.components.findAll();
+        const all = await this._components.findAll();
         return all;
     }
 
@@ -32,7 +34,7 @@ export class ComponentRepository {
         const ids = toFetch.filter((i) => typeof i === 'number');
         const names = toFetch.filter((i) => typeof i === 'string');
 
-        const fetched = await this._db.components.findAll({
+        const fetched = await this._components.findAll({
             where: {
                 [sequelize.Op.or]: [{
                     id: ids,

@@ -1,39 +1,39 @@
+import * as express from 'express';
+import * as graphqlHTTP from 'express-graphql';
 import { Request, Response } from 'express';
-import { GraphQLServer } from 'graphql-yoga';
-import { resolvers } from './gql/resolvers';
-import { typeDefs } from './gql/schema';
-import { requestLogging } from './logging';
+import { requestLogging, rootLogger } from './logging';
 import { database } from './data';
 import { config } from './config';
-import { createLogger } from 'bunyan';
-import { configureDevTools } from './dev';
+import { seedDatabase } from './dev';
+import { requestContext, schema } from './gql';
+import { authorization } from './auth';
 
-const logger = createLogger({
-  name: 'landing-page',
-});
+const server = express()
+  // logging must be registered first
+  .use(requestLogging(rootLogger))
+  .use(database())
+  .use(authorization())
+  .use(requestContext())
+  .use('/_graphql', graphqlHTTP({
+    schema,
+    graphiql: false,
+    context: (args: { res: Response }) => args.res.locals.graphqlContext,
+  }))
+  .use('/_playground', graphqlHTTP({
+    schema,
+    graphiql: true,
+    context: (args: { res: Response }) => args.res.locals.graphqlContext,
+  }));
 
-const server = new GraphQLServer({
-  resolvers,
-  typeDefs,
-  context: (args: { res: Response }) => args.res.locals.graphqlContext,
-});
-
-// logging must be registered first
-server.use(requestLogging(logger));
-server.use(database(config.pg));
-configureDevTools(server.express);
+if (true) {
+  server.use('/seed', seedDatabase);
+}
 
 // catch-all route
 server.get('/', (req: Request, res: Response) => {
-  const response = {
-    message: 'nothing is here!',
-  };
-  res.json(response);
+  res.json({ message: `This is not the page you're looking for!` });
 });
 
-server.start({
-  port: 8000,
-  endpoint: '/_graphql',
-  subscriptions: '/_subscriptions',
-  playground: '/_graphqlPlayground',
-}, (opts) => logger.info(`Server is running on http://localhost:${opts.port}`));
+server.listen(config.api.port, config.api.host, () => {
+  rootLogger.info(`Server is running on http://localhost:${config.api.port}`);
+});

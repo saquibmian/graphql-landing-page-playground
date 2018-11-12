@@ -1,9 +1,11 @@
+import * as Logger from 'bunyan';
 import { ComponentRepository } from '../data/ComponentRepository';
 import { IPrincipal } from '../domain/Principal';
 import { Component } from '../gql/types/Component';
 
 export class ComponentService {
     constructor(
+        private readonly _log: Logger,
         private readonly _repository: ComponentRepository,
     ) { }
 

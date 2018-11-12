@@ -1,3 +1,4 @@
+import * as Logger from 'bunyan';
 import { ComponentRepository } from '../data/ComponentRepository';
 import { IStatusUpdateDAO } from '../data/StatusUpdateDAO';
 import { StatusUpdateRepository } from '../data/StatusUpdateRepository';
@@ -8,6 +9,7 @@ import { StatusUpdate } from '../gql/types/StatusUpdate';
 export class StatusUpdateService {
 
     constructor(
+        private readonly _log: Logger,
         private readonly _componentRepository: ComponentRepository,
         private readonly _repository: StatusUpdateRepository,
     ) {

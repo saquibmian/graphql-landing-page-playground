@@ -1,12 +1,14 @@
 import { RequestHandler } from 'express';
 import { IPrincipal } from '../domain/Principal';
-
-export const anonymous: IPrincipal = {
-    name: 'Saquib Mian',
-};
+import { config } from '../config';
 
 export function authorization(): RequestHandler {
     return (req, res, next) => {
-        res.locals.principal = anonymous;
+        const principal = config.auth.anonymous;
+        res.locals.principal = principal;
+
+        res.locals.logger.trace({ principal }, 'authenticated user');
+
+        next();
     };
 }

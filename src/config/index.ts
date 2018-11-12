@@ -1,4 +1,37 @@
-export const config = {
+import { LogLevel } from 'bunyan';
+import { IPrincipal } from '../domain/Principal';
+import { IDatabaseConfig } from '../data/db';
+
+interface IConfig {
+    logging: {
+        level: LogLevel,
+    };
+
+    auth: {
+        anonymous: IPrincipal;
+    };
+
+    api: {
+        host: string;
+        port: number;
+    };
+
+    pg: IDatabaseConfig;
+}
+
+export const config: IConfig = {
+    logging: {
+        level: 'trace',
+    },
+    auth: {
+        anonymous: {
+            name: 'John Doe',
+        },
+    },
+    api: {
+        host: process.env.API_HOST || 'localhost',
+        port: parseInt(process.env.API_PORT || '8000', 10),
+    },
     pg: {
         path: process.env.DB_FILE || '',
         database: process.env.DB_DATABASE || '',
