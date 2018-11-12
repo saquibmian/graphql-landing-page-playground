@@ -1,4 +1,4 @@
-import { IComponentDAO } from '../../data/ComponentDAO';
+import { IComponentDAO } from '../../data/IComponentDAO';
 import { IGQLContext } from '../context';
 import { GQLType } from '../decorators/GQLType';
 import { StatusUpdate } from './StatusUpdate';

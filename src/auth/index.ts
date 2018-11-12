@@ -1,5 +1,5 @@
 import { RequestHandler } from 'express';
-import { IPrincipal } from '../domain/Principal';
+import { IPrincipal } from '../domain/IPrincipal';
 import { config } from '../config';
 
 export function authorization(): RequestHandler {

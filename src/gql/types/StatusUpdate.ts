@@ -1,4 +1,4 @@
-import { IStatusUpdateDAO } from '../../data/StatusUpdateDAO';
+import { IStatusUpdateDAO } from '../../data/IStatusUpdateDAO';
 import { GQLType } from '../decorators/GQLType';
 import { Component } from './Component';
 

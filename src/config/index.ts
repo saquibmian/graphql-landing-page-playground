@@ -1,5 +1,5 @@
 import { LogLevel } from 'bunyan';
-import { IPrincipal } from '../domain/Principal';
+import { IPrincipal } from '../domain/IPrincipal';
 import { IDatabaseConfig } from '../data/db';
 
 interface IConfig {

@@ -1,5 +1,5 @@
 import * as Logger from 'bunyan';
-import { IPrincipal } from '../domain/Principal';
+import { IPrincipal } from '../domain/IPrincipal';
 import { ComponentService } from '../service/ComponentService';
 import { StatusUpdateService } from '../service/StatusUpdateService';
 

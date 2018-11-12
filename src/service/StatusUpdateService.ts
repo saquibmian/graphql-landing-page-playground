@@ -1,8 +1,8 @@
 import * as Logger from 'bunyan';
 import { ComponentRepository } from '../data/ComponentRepository';
-import { IStatusUpdateDAO } from '../data/StatusUpdateDAO';
+import { IStatusUpdateDAO } from '../data/IStatusUpdateDAO';
 import { StatusUpdateRepository } from '../data/StatusUpdateRepository';
-import { IPrincipal } from '../domain/Principal';
+import { IPrincipal } from '../domain/IPrincipal';
 import { Component } from '../gql/types/Component';
 import { StatusUpdate } from '../gql/types/StatusUpdate';
 

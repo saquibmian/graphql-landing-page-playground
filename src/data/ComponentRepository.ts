@@ -1,7 +1,7 @@
 import * as Logger from 'bunyan';
 import * as DataLoader from 'dataloader';
 import sequelize = require('sequelize');
-import { IComponentDAO } from './ComponentDAO';
+import { IComponentDAO } from './IComponentDAO';
 import { ComponentModel } from './db/component';
 
 export class ComponentRepository {

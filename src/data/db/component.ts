@@ -1,6 +1,6 @@
 import { BIGINT, Instance, Sequelize, STRING } from 'sequelize';
 import * as sequelize from 'sequelize';
-import { IComponentDAO } from '../ComponentDAO';
+import { IComponentDAO } from '../IComponentDAO';
 
 type ComponentType = Instance<IComponentDAO> & IComponentDAO;
 export type ComponentModel = sequelize.Model<ComponentType, IComponentDAO>;

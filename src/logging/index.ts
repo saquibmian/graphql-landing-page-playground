@@ -5,7 +5,7 @@ import { config } from '../config';
 
 export const rootLogger = createLogger({
     name: 'landing-page',
-    level: config.logging.level as Logger.LogLevel,
+    level: config.logging.level,
 });
 
 let requestId = 0;

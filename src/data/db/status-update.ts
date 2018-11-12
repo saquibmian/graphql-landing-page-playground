@@ -1,6 +1,6 @@
 import { BIGINT, Instance, Sequelize, STRING } from 'sequelize';
 import * as sequelize from 'sequelize';
-import { IStatusUpdateDAO } from '../StatusUpdateDAO';
+import { IStatusUpdateDAO } from '../IStatusUpdateDAO';
 
 type StatusUpdateType = Instance<IStatusUpdateDAO> & IStatusUpdateDAO;
 export type StatusUpdateModel = sequelize.Model<StatusUpdateType, IStatusUpdateDAO>;

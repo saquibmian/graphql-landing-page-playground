@@ -1,7 +1,7 @@
 import * as Logger from 'bunyan';
 import * as DataLoader from 'dataloader';
 import * as _ from 'lodash';
-import { IStatusUpdateDAO } from './StatusUpdateDAO';
+import { IStatusUpdateDAO } from './IStatusUpdateDAO';
 import { StatusUpdateModel } from './db/status-update';
 
 export class StatusUpdateRepository {
