@@ -1,15 +1,17 @@
-import { resolverMap } from "./_internal";
+import { resolverMap } from './_internal';
 
 /**
- * Adds a class to the global GraphQL resolver map. 
- * 
+ * Adds a class to the global GraphQL resolver map.
+ *
  * All functions in the class are added as resolver functions.
  */
+// tslint:disable-next-line:ban-types
 export function GQLType(constructor: Function) {
     const resolver = makeResolverObject(constructor);
     resolverMap[constructor.name] = resolver;
 }
 
+// tslint:disable-next-line:ban-types
 function makeResolverObject(type: Function): object {
     const resolver: { [key: string]: any } = {};
 
@@ -28,4 +30,3 @@ function makeResolverObject(type: Function): object {
 
     return resolver;
 }
-

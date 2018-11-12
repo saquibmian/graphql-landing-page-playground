@@ -1,3 +1,3 @@
-export interface Principal {
+export interface IPrincipal {
     name: string;
 }

@@ -1,41 +1,41 @@
-import { StatusUpdateDAO } from "./StatusUpdateDAO";
-import { Database } from "./db";
 import * as DataLoader from 'dataloader';
 import * as _ from 'lodash';
+import { Database } from './db';
+import { IStatusUpdateDAO } from './StatusUpdateDAO';
 
 export class StatusUpdateRepository {
 
-    private readonly _dataloader: DataLoader<number, StatusUpdateDAO[]>;
+    private readonly _dataloader: DataLoader<number, IStatusUpdateDAO[]>;
 
     constructor(
         private readonly _db: Database,
     ) {
-        this._dataloader = new DataLoader(ids => this.load(ids));
+        this._dataloader = new DataLoader((ids) => this.load(ids));
     }
 
-    private async load(toFetch: number[]): Promise<StatusUpdateDAO[][]> {
-        const fetched = await this._db.statusUpdates.findAll({
-            where: {
-                componentId: toFetch
-            }
-        });
-
-        const groupedByComponentId = _.groupBy(fetched, f => f.componentId);
-        return toFetch.map(i => groupedByComponentId[i] || []);
-    }
-
-    async getAll(componentId?: number): Promise<StatusUpdateDAO[]> {
+    public async getAll(componentId?: number): Promise<IStatusUpdateDAO[]> {
         if (componentId == null) {
-            const all = await this._db.statusUpdates.findAll({ order: [['timestamp', 'DESC']] });
-            return all;
+            const allForComponent = await this._db.statusUpdates.findAll({ order: [['timestamp', 'DESC']] });
+            return allForComponent;
         }
         const all = await this._dataloader.load(componentId);
         return all;
     }
 
-    async create(item: StatusUpdateDAO): Promise<StatusUpdateDAO> {
+    public async create(item: IStatusUpdateDAO): Promise<IStatusUpdateDAO> {
         const created = this._db.statusUpdates.create(item);
         return created;
+    }
+
+    private async load(toFetch: number[]): Promise<IStatusUpdateDAO[][]> {
+        const fetched = await this._db.statusUpdates.findAll({
+            where: {
+                componentId: toFetch,
+            },
+        });
+
+        const groupedByComponentId = _.groupBy(fetched, (f) => f.componentId);
+        return toFetch.map((i) => groupedByComponentId[i] || []);
     }
 
 }

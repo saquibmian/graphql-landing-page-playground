@@ -1,60 +1,39 @@
-import { GraphQLServer } from 'graphql-yoga'
-import { Database } from './data/db';
+import { Request, Response } from 'express';
+import { GraphQLServer } from 'graphql-yoga';
 import { resolvers } from './gql/resolvers';
 import { typeDefs } from './gql/schema';
-import { Request, Response } from 'express';
-import { Context } from './gql/context';
-import { ComponentService } from './service/ComponentService';
-import { ComponentRepository } from './data/ComponentRepository';
-import { StatusUpdateService } from './service/StatusUpdateService';
-import { StatusUpdateRepository } from './data/StatusUpdateRepository';
+import { requestLogging } from './logging';
+import { database } from './data';
+import { config } from './config';
+import { createLogger } from 'bunyan';
+import { configureDevTools } from './dev';
 
-const db = new Database({
-  path: process.env.DB_FILE || '',
-  database: process.env.DB_DATABASE || '',
-  user: process.env.DB_USER || '',
-  password: process.env.DB_PASSWORD || '',
+const logger = createLogger({
+  name: 'landing-page',
 });
-
-function requestContextFactory(): Context {
-  const principal = { name: 'Saquib' };
-
-  const componentRepo = new ComponentRepository(db);
-  const statusUpdateRepo = new StatusUpdateRepository(db);
-
-  const components = new ComponentService(componentRepo);
-  const statusUpdates = new StatusUpdateService(componentRepo, statusUpdateRepo);
-
-  return {
-    principal,
-    components,
-    statusUpdates
-  };
-}
 
 const server = new GraphQLServer({
   resolvers,
   typeDefs,
-  context: requestContextFactory
+  context: (args: { res: Response }) => args.res.locals.graphqlContext,
 });
 
-server.get('/', (req: Request, res: Response) => res.json({ response: 'nothing here!' }));
+// logging must be registered first
+server.use(requestLogging(logger));
+server.use(database(config.pg));
+configureDevTools(server.express);
 
-Promise.resolve(true)
-  .then(() => db.components.drop())
-  .then(() => db.statusUpdates.drop())
-  .then(() => db.components.sync())
-  .then(() => db.statusUpdates.sync())
-  .then(() => db.components.upsert({ name: 'first' }))
-  .then(() => db.components.upsert({ name: 'second' }))
-  .then(() => db.components.upsert({ name: 'third' }))
-  .then(() => {
+// catch-all route
+server.get('/', (req: Request, res: Response) => {
+  const response = {
+    message: 'nothing is here!',
+  };
+  res.json(response);
+});
 
-    server.start({
-      port: 8000,
-      endpoint: '/_graphql',
-      subscriptions: '/_subscriptions',
-      playground: '/_graphqlPlayground',
-    }, opts => console.log(`Server is running on http://localhost:${opts.port}`));
-
-  });
+server.start({
+  port: 8000,
+  endpoint: '/_graphql',
+  subscriptions: '/_subscriptions',
+  playground: '/_graphqlPlayground',
+}, (opts) => logger.info(`Server is running on http://localhost:${opts.port}`));

@@ -1,7 +1,7 @@
-import { ComponentDAO } from "../../data/ComponentDAO";
-import { StatusUpdate } from "./StatusUpdate";
-import { Context } from "../context";
-import { GQLType } from "../decorators/GQLType";
+import { IComponentDAO } from '../../data/ComponentDAO';
+import { IGQLContext } from '../context';
+import { GQLType } from '../decorators/GQLType';
+import { StatusUpdate } from './StatusUpdate';
 
 /**
  * Component implements the GraphQL Component type.
@@ -10,7 +10,7 @@ import { GQLType } from "../decorators/GQLType";
 export class Component {
 
     constructor(
-        private readonly _dao: ComponentDAO
+        private readonly _dao: IComponentDAO,
     ) { }
 
     get id(): number {
@@ -29,8 +29,8 @@ export class Component {
      * Implements:
      *  statusUpdates(mostRecent: Int, since: Int): [StatusUpdate!]!
      */
-    async statusUpdates(parent: Component, args: any, ctx: Context): Promise<StatusUpdate[]> {
-        console.debug('called Component.statusUpdates');
+    public async statusUpdates(parent: Component, args: any, ctx: IGQLContext): Promise<StatusUpdate[]> {
+        ctx.logger.debug('called Component.statusUpdates');
         return await ctx.statusUpdates.getAll(ctx.principal, parent);
     }
 

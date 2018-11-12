@@ -1,4 +1,4 @@
-export interface StatusUpdateDAO {
+export interface IStatusUpdateDAO {
     id?: number;
     timestamp: number;
     componentId: number;

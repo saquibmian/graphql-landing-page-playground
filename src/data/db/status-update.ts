@@ -1,16 +1,16 @@
-import { Instance, Sequelize, STRING, BIGINT } from "sequelize";
-import * as sequelize from "sequelize";
-import { StatusUpdateDAO } from "../StatusUpdateDAO";
+import { BIGINT, Instance, Sequelize, STRING } from 'sequelize';
+import * as sequelize from 'sequelize';
+import { IStatusUpdateDAO } from '../StatusUpdateDAO';
 
-type StatusUpdateType = Instance<StatusUpdateDAO> & StatusUpdateDAO;
-export type StatusUpdateModel = sequelize.Model<StatusUpdateType, StatusUpdateDAO>;
+type StatusUpdateType = Instance<IStatusUpdateDAO> & IStatusUpdateDAO;
+export type StatusUpdateModel = sequelize.Model<StatusUpdateType, IStatusUpdateDAO>;
 
 export function factory(sql: Sequelize): StatusUpdateModel {
-    return sql.define<StatusUpdateType, StatusUpdateDAO>('status_update', {
+    return sql.define<StatusUpdateType, IStatusUpdateDAO>('status_update', {
         id: {
             type: BIGINT,
             primaryKey: true,
-            autoIncrement: true
+            autoIncrement: true,
         },
         timestamp: {
             type: BIGINT,
@@ -21,18 +21,18 @@ export function factory(sql: Sequelize): StatusUpdateModel {
             allowNull: false,
             references: {
                 model: 'components',
-                key: 'id'
+                key: 'id',
             },
-            field: 'component_id'
+            field: 'component_id',
         },
         severity: {
             type: STRING,
             allowNull: false,
-            values: ['RED', 'YELLOW', 'GREEN']
+            values: ['RED', 'YELLOW', 'GREEN'],
         },
         message: {
             type: STRING,
-            allowNull: false
+            allowNull: false,
         },
     });
-};
+}

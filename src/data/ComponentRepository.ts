@@ -1,55 +1,54 @@
-import { ComponentDAO } from "./ComponentDAO";
-import { Database } from "./db";
 import * as DataLoader from 'dataloader';
-import sequelize = require("sequelize");
-
+import sequelize = require('sequelize');
+import { IComponentDAO } from './ComponentDAO';
+import { Database } from './db';
 
 export class ComponentRepository {
 
-    private readonly _dataloader: DataLoader<number | string, ComponentDAO>;
+    private readonly _dataloader: DataLoader<number | string, IComponentDAO>;
 
     constructor(
         private readonly _db: Database,
     ) {
-        this._dataloader = new DataLoader(ids => this.load(ids));
+        this._dataloader = new DataLoader((ids) => this.load(ids));
     }
 
-    private async load(toFetch: (number | string)[]): Promise<ComponentDAO[]> {
-        const ids = toFetch.filter(i => typeof i === 'number');
-        const names = toFetch.filter(i => typeof i === 'string');
+    public async getById(id: number): Promise<IComponentDAO> {
+        const found = await this._dataloader.load(id);
+        return found;
+    }
+
+    public async getByName(name: string): Promise<IComponentDAO> {
+        const found = await this._dataloader.load(name);
+        return found;
+    }
+
+    public async getAll(): Promise<IComponentDAO[]> {
+        const all = await this._db.components.findAll();
+        return all;
+    }
+
+    private async load(toFetch: Array<number | string>): Promise<IComponentDAO[]> {
+        const ids = toFetch.filter((i) => typeof i === 'number');
+        const names = toFetch.filter((i) => typeof i === 'string');
 
         const fetched = await this._db.components.findAll({
             where: {
                 [sequelize.Op.or]: [{
-                    id: ids
+                    id: ids,
                 }, {
-                    name: names
-                }]
-            }
+                    name: names,
+                }],
+            },
         });
 
-        return toFetch.map(i => {
-            const found = fetched.find(item => item.id === i || item.name === i)!
+        return toFetch.map((i) => {
+            const found = fetched.find((item) => item.id === i || item.name === i)!;
             if (found == null) {
                 throw new Error(`There is no component with ID or name '${i}'.`);
             }
             return found;
         });
-    }
-
-    async getById(id: number): Promise<ComponentDAO> {
-        const found = await this._dataloader.load(id);
-        return found;
-    }
-
-    async getByName(name: string): Promise<ComponentDAO> {
-        const found = await this._dataloader.load(name);
-        return found;
-    }
-
-    async getAll(): Promise<ComponentDAO[]> {
-        const all = await this._db.components.findAll();
-        return all;
     }
 
 }

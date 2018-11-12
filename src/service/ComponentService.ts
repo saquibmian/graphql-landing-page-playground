@@ -1,25 +1,25 @@
-import { Principal } from "../domain/Principal";
-import { ComponentRepository } from "../data/ComponentRepository";
-import { Component } from "../gql/types/Component";
+import { ComponentRepository } from '../data/ComponentRepository';
+import { IPrincipal } from '../domain/Principal';
+import { Component } from '../gql/types/Component';
 
 export class ComponentService {
     constructor(
         private readonly _repository: ComponentRepository,
     ) { }
 
-    async getById(principal: Principal, id: number): Promise<Component> {
+    public async getById(principal: IPrincipal, id: number): Promise<Component> {
         const found = await this._repository.getById(id);
         return new Component(found);
     }
 
-    async getByName(principal: Principal, name: string): Promise<Component> {
+    public async getByName(principal: IPrincipal, name: string): Promise<Component> {
         const found = await this._repository.getByName(name);
         return new Component(found);
     }
 
-    async getAll(principal: Principal): Promise<Component[]> {
+    public async getAll(principal: IPrincipal): Promise<Component[]> {
         const all = await this._repository.getAll();
-        return all.map(item => new Component(item));
+        return all.map((item) => new Component(item));
     }
 
 }

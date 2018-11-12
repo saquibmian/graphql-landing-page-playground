@@ -1,11 +1,11 @@
-import { Query } from "./types/Query";
-import { Mutation } from "./types/Mutation";
-import { resolverMap } from "./decorators/_internal";
+import { resolverMap } from './decorators/_internal';
+import { Mutation } from './types/Mutation';
+import { Query } from './types/Query';
 
 // Instantiate the schema roots. All others in the graph will be loaded automatically.
-var roots = [
+const roots = [
     Query,
-    Mutation
+    Mutation,
 ];
 
 export const resolvers = resolverMap;

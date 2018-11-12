@@ -1,16 +1,16 @@
-import { Component } from "./Component";
-import { StatusUpdateDAO } from "../../data/StatusUpdateDAO";
-import { GQLType } from "../decorators/GQLType";
+import { IStatusUpdateDAO } from '../../data/StatusUpdateDAO';
+import { GQLType } from '../decorators/GQLType';
+import { Component } from './Component';
 
 @GQLType
 export class StatusUpdate {
-    id: number;
-    timestamp: Date;
-    component: Component;
-    severity: string;
-    message: string;
+    public id: number;
+    public timestamp: Date;
+    public component: Component;
+    public severity: string;
+    public message: string;
 
-    constructor(dao: StatusUpdateDAO, component: Component) {
+    constructor(dao: IStatusUpdateDAO, component: Component) {
         this.id = dao.id!;
         this.component = component;
         this.timestamp = new Date(dao.timestamp);

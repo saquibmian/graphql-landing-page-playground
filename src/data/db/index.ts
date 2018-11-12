@@ -1,8 +1,8 @@
-import * as Sequelize from "sequelize";
-import { factory as componentFactory, ComponentModel } from './component';
+import * as Sequelize from 'sequelize';
+import { ComponentModel, factory as componentFactory } from './component';
 import { factory as statusUpdateFactory, StatusUpdateModel } from './status-update';
 
-export interface DatabaseConfig {
+export interface IDatabaseConfig {
     database: string;
     user: string;
     password: string;
@@ -11,12 +11,12 @@ export interface DatabaseConfig {
 
 export class Database {
 
+    public readonly components: ComponentModel;
+    public readonly statusUpdates: StatusUpdateModel;
+
     private readonly _sql: Sequelize.Sequelize;
 
-    readonly components: ComponentModel;
-    readonly statusUpdates: StatusUpdateModel;
-
-    constructor(config: DatabaseConfig) {
+    constructor(config: IDatabaseConfig) {
         this._sql = new Sequelize(config.database, config.user, config.password, {
             dialect: 'sqlite',
             storage: config.path,
@@ -24,8 +24,8 @@ export class Database {
                 max: 5,
                 min: 0,
                 acquire: 30000,
-                idle: 10000
-            }
+                idle: 10000,
+            },
         });
 
         this.components = componentFactory(this._sql);
@@ -34,4 +34,3 @@ export class Database {
     }
 
 }
-

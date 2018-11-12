@@ -1,4 +1,4 @@
-export interface ComponentDAO {
+export interface IComponentDAO {
     id?: number;
-    name: string
+    name: string;
 }
