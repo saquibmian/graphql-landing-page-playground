@@ -21,7 +21,7 @@ interface IConfig {
 
 export const config: IConfig = {
     logging: {
-        level: 'trace',
+        level: 'debug',
     },
     auth: {
         anonymous: {

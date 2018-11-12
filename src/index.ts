@@ -1,10 +1,11 @@
 import * as express from 'express';
+import { default as graphqlPlayground } from 'graphql-playground-middleware-express';
 import { Request, Response } from 'express';
 import { requestLogging, rootLogger } from './logging';
 import { database } from './data';
 import { config } from './config';
 import { seedDatabase } from './dev';
-import { requestContext, graphql } from './gql';
+import { graphql } from './gql';
 import { authorization } from './auth';
 
 const server = express()
@@ -12,9 +13,10 @@ const server = express()
   .use(requestLogging(rootLogger))
   .use(database())
   .use(authorization())
-  .use(requestContext())
   .use('/_graphql', graphql())
-  .use('/_playground', graphql(true));
+  .use('/_playground', graphqlPlayground({
+    endpoint: '/_graphql',
+  }));
 
 if (true) {
   server.use('/seed', seedDatabase);
