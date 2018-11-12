@@ -1,11 +1,10 @@
 import * as express from 'express';
-import * as graphqlHTTP from 'express-graphql';
 import { Request, Response } from 'express';
 import { requestLogging, rootLogger } from './logging';
 import { database } from './data';
 import { config } from './config';
 import { seedDatabase } from './dev';
-import { requestContext, schema } from './gql';
+import { requestContext, graphql } from './gql';
 import { authorization } from './auth';
 
 const server = express()
@@ -14,16 +13,8 @@ const server = express()
   .use(database())
   .use(authorization())
   .use(requestContext())
-  .use('/_graphql', graphqlHTTP({
-    schema,
-    graphiql: false,
-    context: (args: { res: Response }) => args.res.locals.graphqlContext,
-  }))
-  .use('/_playground', graphqlHTTP({
-    schema,
-    graphiql: true,
-    context: (args: { res: Response }) => args.res.locals.graphqlContext,
-  }));
+  .use('/_graphql', graphql())
+  .use('/_playground', graphql(true));
 
 if (true) {
   server.use('/seed', seedDatabase);

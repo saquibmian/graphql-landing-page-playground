@@ -1,4 +1,3 @@
-import { IResolverObject } from 'graphql-middleware/dist/types';
 import { IGQLContext } from '../context';
 import { GQLType } from '../decorators/GQLType';
 import { Component } from './Component';

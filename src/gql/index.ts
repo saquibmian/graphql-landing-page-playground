@@ -1,3 +1,4 @@
+import * as graphqlHTTP from 'express-graphql';
 import { RequestHandler } from 'express';
 import { IGQLContext } from './context';
 import { ComponentRepository } from '../data/ComponentRepository';
@@ -8,10 +9,21 @@ import { makeExecutableSchema } from 'graphql-tools';
 import { typeDefs } from './schema';
 import { resolverMap } from './decorators/_internal';
 
-export const schema = makeExecutableSchema({
-    typeDefs,
-    resolvers: resolverMap,
-});
+export function graphql(playground?: boolean): RequestHandler {
+    const schema = makeExecutableSchema({
+        typeDefs,
+        resolvers: resolverMap,
+    });
+
+    return (req, res) => {
+        const handler = graphqlHTTP({
+            schema,
+            graphiql: playground,
+            context: res.locals.graphqlContext,
+        });
+        return handler(req, res);
+    };
+}
 
 export function requestContext(): RequestHandler {
     return (req, res, next) => {
